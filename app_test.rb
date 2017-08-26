@@ -10,4 +10,5 @@ class GameHandlerTest < Minitest::Test
   def test_begin_game_is_called
     assert_equal true, @obj.begin_game
   end
+
 end
