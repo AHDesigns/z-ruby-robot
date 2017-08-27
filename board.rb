@@ -1,3 +1,5 @@
+require_relative 'msg_handler'
+
 # stores the map and all players on it, calculates moves
 class Board
   attr_reader :board_size, :player_class_ref, :board, :player
@@ -27,7 +29,7 @@ class Board
     if new_pos.all? { |x| movement_valid?(x) }
       new_pos
     else
-      puts 'invalid move'
+      MsgHandler.log(msg: 'invalid', values: new_pos)
       false
     end
   end
@@ -40,7 +42,7 @@ class Board
 
   def defaults
     {
-      board_size: 5
+      board_size: 9
     }
   end
 

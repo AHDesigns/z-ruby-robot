@@ -1,3 +1,5 @@
+require_relative 'msg_handler'
+
 # handles player actions
 class Player
   DIRECTION = {
@@ -29,7 +31,7 @@ class Player
     when 'r'
       turn_right
     else
-      'invalid move'
+      MsgHandler.log(msg: 'invalid_keypress', values: keypress)
     end
   end
 
@@ -43,17 +45,9 @@ class Player
     @board.player_move_along(vector)
   end
 
-  def turn(meth)
-    Math.send(meth, Math::PI * @rotation_in_radians).to_i
+  def turn(msg)
+    Math.send(msg, Math::PI * @rotation_in_radians).to_i
   end
-
-  # def turn(x)
-  #   if x == 's'
-  #     Math.sin(Math::PI * @rotation_in_radians).round(1)
-  #   else
-  #     Math.cos(Math::PI * @rotation_in_radians).round(1)
-  #   end
-  # end
 
   def turn_right
     @rotation_in_radians += 0.5
