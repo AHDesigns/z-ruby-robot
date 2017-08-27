@@ -17,7 +17,6 @@ class Player
   end
 
   def direction
-    puts @rotation_in_radians
     DIRECTION[@rotation_in_radians]
   end
 
@@ -45,7 +44,7 @@ class Player
   end
 
   def turn(meth)
-    Math.send(meth, Math::PI * @rotation_in_radians).round(1)
+    Math.send(meth, Math::PI * @rotation_in_radians).to_i
   end
 
   # def turn(x)
