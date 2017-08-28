@@ -2,17 +2,20 @@ require_relative 'player'
 require_relative 'board'
 require_relative 'msg_handler'
 require_relative 'starter'
-# require_relative 'input_handler'
 
 # responsible for managing the game state
 class GameHandler
   attr_reader :game_running, :player, :board, :starter
   def initialize
     @game_running = true
-    @starter = Starter.new
-    @player = Player.new
-    @board = Board.new(player_class_ref: player)
-    @player.define_board(@board)
+    map_size = Starter.map_size(5)
+    player_start = Starter.chose_starting_location(map_size)
+    @board = Board.new(map_size: map_size)
+    @player = Player.new(
+      position: player_start,
+      map_size: map_size,
+      board: board
+    )
   end
 
   def end_game
@@ -21,14 +24,12 @@ class GameHandler
   end
 
   def run_game
-    persist_msg = ''
+    refresh
     while game_running
-      starter.update
       MsgHandler.log(msg: 'inputs')
+      player.update
       board.update
-      puts persist_msg
-      inputs = handle_input
-      inputs.each_char { |input| check_input(input) }
+      inputs.each_char { |input| player_controls(input) }
       refresh
     end
 
@@ -39,13 +40,25 @@ class GameHandler
     system `echo 'clear'`
   end
 
-  def check_input(input)
-    input == 'q' ? end_game : player.move(input)
-  end
-
-  def handle_input
+  def inputs
     MsgHandler.log(msg: 'prompt')
     gets.chomp
+  end
+
+  def player_controls(keypress)
+    puts "keyperss #{keypress}"
+    case keypress
+    when 'q'
+      end_game
+    when 'f'
+      player.move_forward
+    when 'l'
+      player.turn_left
+    when 'r'
+      player.turn_right
+    else
+      MsgHandler.log(msg: 'invalid_keypress', values: keypress)
+    end
   end
 end
 
