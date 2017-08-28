@@ -13,8 +13,30 @@ class GameHandler
   end
 
   def begin_game
-    MsgHandler.log(msg: 'begin')
+    MsgHandler.log(msg: 'begin', values: board.board_size)
+    x = starting_pos('x')
+    y = starting_pos('y')
+    thing = [x,y]
     run_game
+  end
+
+  def starting_pos(axis)
+    valid = false
+    input = 0
+    while valid == false
+      MsgHandler.log(msg: "#{axis}_input")
+      input = gets.chomp
+      if ('0'..'9').cover?(input)
+        valid = board.movement_valid?(input.to_i) ? true : false
+      else
+        MsgHandler.log(msg: 'invalid_keypress', values: input)
+      end
+    end
+    input
+  end
+
+  def end_game
+    @game_running = false
     MsgHandler.log(msg: 'over')
   end
 
@@ -33,11 +55,7 @@ class GameHandler
   end
 
   def check_input(input)
-    if input == 'q'
-      @game_running = false
-    else
-      player.move(input)
-    end
+    input == 'q' ? end_game : player.move(input)
   end
 
   def handle_input
