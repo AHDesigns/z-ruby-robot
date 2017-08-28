@@ -13,6 +13,10 @@ class Board
     @player_class_ref = args[:player_class_ref] # curious if this can go at some point
   end
 
+  def update
+    print_board
+  end
+
   def print_board
     board[player[0]][player[1]] = player_class_ref.direction
     board.each { |row| puts row * '.' }

@@ -1,38 +1,18 @@
 require_relative 'player'
 require_relative 'board'
 require_relative 'msg_handler'
+require_relative 'starter'
+# require_relative 'input_handler'
 
 # responsible for managing the game state
 class GameHandler
-  attr_reader :game_running, :player, :board
+  attr_reader :game_running, :player, :board, :starter
   def initialize
     @game_running = true
+    @starter = Starter.new
     @player = Player.new
     @board = Board.new(player_class_ref: player)
     @player.define_board(@board)
-  end
-
-  def begin_game
-    MsgHandler.log(msg: 'begin', values: board.board_size)
-    x = starting_pos('x')
-    y = starting_pos('y')
-    thing = [x,y]
-    run_game
-  end
-
-  def starting_pos(axis)
-    valid = false
-    input = 0
-    while valid == false
-      MsgHandler.log(msg: "#{axis}_input")
-      input = gets.chomp
-      if ('0'..'9').cover?(input)
-        valid = board.movement_valid?(input.to_i) ? true : false
-      else
-        MsgHandler.log(msg: 'invalid_keypress', values: input)
-      end
-    end
-    input
   end
 
   def end_game
@@ -41,13 +21,18 @@ class GameHandler
   end
 
   def run_game
+    persist_msg = ''
     while game_running
-      refresh
+      starter.update
       MsgHandler.log(msg: 'inputs')
-      board.print_board
+      board.update
+      puts persist_msg
       inputs = handle_input
       inputs.each_char { |input| check_input(input) }
+      refresh
     end
+
+    end_game
   end
 
   def refresh
@@ -64,4 +49,4 @@ class GameHandler
   end
 end
 
-GameHandler.new.begin_game
+GameHandler.new.run_game
