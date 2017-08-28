@@ -15,12 +15,8 @@ class Board
     board.each { |row| puts row * '.' }
   end
 
-  def remove_player(player)
-    board[player[0]][player[1]] = '_'
-  end
-
-  def add_player(player, player_icon)
-    board[player[0]][player[1]] = player_icon
+  def update_player(player, player_icon = nil)
+    board[player[0]][player[1]] = player_icon || '_'
   end
 
   private

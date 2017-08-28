@@ -32,7 +32,7 @@ class Player
   end
 
   def update
-    board_ref.add_player(position, player_icon)
+    board_ref.update_player(position, player_icon)
   end
 
   private
@@ -53,7 +53,7 @@ class Player
   end
 
   def move_along(vector)
-    board_ref.remove_player(position)
+    board_ref.update_player(position)
     @position = attempt_movement(vector) || position
   end
 
