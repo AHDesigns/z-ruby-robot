@@ -26,12 +26,11 @@ class GameHandler
   def run_game
     refresh
     while game_running
-      # MsgHandler.storedMsg
       MsgHandler.log(msg: 'inputs')
       player.update
       board.update
       inputs.each_char { |input| player_controls(input) }
-      refresh
+      # refresh # add this later
     end
   end
 
@@ -44,31 +43,31 @@ class GameHandler
     gets.chomp
   end
 
-  MOVES = {
-    # 'q' => send('end_game'),
-    'f' => @player.send('move_forward'),
-    'l' => @player.send('turn_left'),
-    'r' => @player.send('turn_right')
-  }.freeze
+  # MOVES = {
+  #   # 'q' => send('end_game'),
+  #   'f' => @player.send('move_forward'),
+  #   'l' => @player.send('turn_left'),
+  #   'r' => @player.send('turn_right')
+  # }.freeze
+  #
+  # def player_controls(keypress)
+  #   MOVES[keypress]
+  # end
 
   def player_controls(keypress)
-    MOVES[keypress]
+    case keypress
+    when 'q'
+      end_game
+    when 'f'
+      player.move_forward
+    when 'l'
+      player.turn_left
+    when 'r'
+      player.turn_right
+    else
+      MsgHandler.log(msg: 'invalid_keypress', values: keypress)
+    end
   end
-
-  # def player_controls2(keypress)
-  #   case keypress
-  #   when 'q'
-  #     end_game
-  #   when 'f'
-  #     player.move_forward
-  #   when 'l'
-  #     player.turn_left
-  #   when 'r'
-  #     player.turn_right
-  #   else
-  #     MsgHandler.log(msg: 'invalid_keypress', values: keypress)
-  #   end
-  # end
 end
 
 GameHandler.new.run_game
