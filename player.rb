@@ -15,19 +15,16 @@ class Player
     ICON_FOR[@rotation_in_radians]
   end
 
-  def turn_right
-    puts 'turning'
-    @rotation_in_radians += 0.5
-    @rotation_in_radians = 0.0 if @rotation_in_radians == 2
+  def turn(direction)
+    return unless DIR.keys.include?(direction)
+    @rotation_in_radians = @rotation_in_radians.send(DIR[direction], 0.5) % 2
   end
 
-  def turn_left
-    @rotation_in_radians -= 0.5
-    @rotation_in_radians = 1.5 if @rotation_in_radians == -0.5
-  end
-
-  def move_forward
-    vector = [rad_to_vect('sin'), rad_to_vect('cos')]
+  def forward(speed)
+    vector = [
+      rad_to_vect(:sin) * speed,
+      rad_to_vect(:cos) * speed
+    ]
     move_along(vector)
   end
 
@@ -36,6 +33,11 @@ class Player
   end
 
   private
+
+  DIR = {
+    left: :-,
+    right: :+
+  }.freeze
 
   ICON_FOR = {
     0.0  => '>',

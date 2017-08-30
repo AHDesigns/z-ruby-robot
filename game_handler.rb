@@ -1,6 +1,7 @@
 require_relative 'player'
 require_relative 'board'
 require_relative 'msg_handler'
+require_relative 'input_handler'
 require_relative 'starter'
 
 # responsible for managing the game state
@@ -18,56 +19,35 @@ class GameHandler
     )
   end
 
-  def end_game
-    @game_running = false
-    MsgHandler.log(msg: 'over')
-  end
-
   def run_game
     refresh
     while game_running
       MsgHandler.log(msg: 'inputs')
       player.update
       board.update
-      inputs.each_char { |input| player_controls(input) }
+      InputHandler.update.each { |c| player_input(c) }
       # refresh # add this later
     end
+  end
+
+  private
+
+  def player_input(args)
+    obj = args[:handler]
+    action = args[:action]
+    value = args[:value]
+    obj.send(action, value)
   end
 
   def refresh
     system `echo 'clear'`
   end
 
-  def inputs
-    MsgHandler.log(msg: 'prompt')
-    gets.chomp
+  def quit
+    @game_running = false
+    MsgHandler.log(msg: 'over')
   end
 
-  # MOVES = {
-  #   # 'q' => send('end_game'),
-  #   'f' => @player.send('move_forward'),
-  #   'l' => @player.send('turn_left'),
-  #   'r' => @player.send('turn_right')
-  # }.freeze
-  #
-  # def player_controls(keypress)
-  #   MOVES[keypress]
-  # end
-
-  def player_controls(keypress)
-    case keypress
-    when 'q'
-      end_game
-    when 'f'
-      player.move_forward
-    when 'l'
-      player.turn_left
-    when 'r'
-      player.turn_right
-    else
-      MsgHandler.log(msg: 'invalid_keypress', values: keypress)
-    end
-  end
 end
 
 GameHandler.new.run_game
