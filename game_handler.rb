@@ -33,10 +33,12 @@ class GameHandler
   private
 
   def player_input(args)
+    puts player.inspect
     obj = args[:handler]
     action = args[:action]
     value = args[:value]
-    obj.send(action, value)
+    puts Kernel.const_get(obj).inspect
+    Kernel.const_get(obj).send(action, value)
   end
 
   def refresh
